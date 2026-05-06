@@ -1,0 +1,90 @@
+[versions]
+java = "25"
+springboot = "4.0.6"
+springDependencyManagement = "1.1.7"
+kotlin = "2.3.21"
+kotlinCoroutines = "1.10.2"
+kotlinter = "5.4.2"
+testLogger = "4.0.0"
+kotest = "6.1.11"
+mockk = "1.14.7"
+springmockk = "5.0.1"
+springdoc = "3.0.3"
+
+[libraries]
+# Web
+starterWebflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
+
+# Validation
+starterValidation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+
+# Security
+starterSecurity = { module = "org.springframework.boot:spring-boot-starter-security" }
+
+# Actuator
+starterActuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
+
+# R2DBC
+starterDataR2dbc = { module = "org.springframework.boot:spring-boot-starter-data-r2dbc" }
+r2dbcPostgresql = { module = "org.postgresql:r2dbc-postgresql" }
+
+# SpringDoc / Swagger UI
+springDoc = { module = "org.springdoc:springdoc-openapi-starter-webflux-ui", version.ref = "springdoc" }
+
+# Kotlin support
+jacksonKotlin = { module = "tools.jackson.module:jackson-module-kotlin" }
+reactorKotlinExtensions = { module = "io.projectreactor.kotlin:reactor-kotlin-extensions" }
+kotlinReflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
+kotlinCoroutinesReactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "kotlinCoroutines" }
+
+# Test dependencies
+springBootStarterTest = { module = "org.springframework.boot:spring-boot-starter-test" }
+webfluxTest = { module = "org.springframework.boot:spring-boot-starter-webflux-test" }
+dataR2dbcTest = { module = "org.springframework.boot:spring-boot-starter-data-r2dbc-test" }
+springSecurityTest = { module = "org.springframework.security:spring-security-test" }
+reactorTest = { module = "io.projectreactor:reactor-test" }
+testcontainersJunitJupiter = { module = "org.testcontainers:testcontainers-junit-jupiter" }
+testcontainersPostgresql = { module = "org.testcontainers:testcontainers-postgresql" }
+testcontainersR2dbc = { module = "org.testcontainers:testcontainers-r2dbc" }
+springBootTestcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
+kotlinTestJunit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5" }
+kotlinCoroutinesTest = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutines" }
+kotestAssertionsCoreJvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest" }
+junitPlatformLauncher = { module = "org.junit.platform:junit-platform-launcher" }
+mockk = { module = "io.mockk:mockk-jvm", version.ref = "mockk" }
+springmockk = { module = "com.ninja-squad:springmockk", version.ref = "springmockk" }
+postgresql = { module = "org.postgresql:postgresql" }
+
+[bundles]
+kotlinSupport = [
+    "jacksonKotlin",
+    "kotlinReflect",
+    "reactorKotlinExtensions",
+    "kotlinCoroutinesReactor",
+]
+testcore = [
+    "springBootStarterTest",
+    "webfluxTest",
+    "dataR2dbcTest",
+    "springSecurityTest",
+    "reactorTest",
+    "kotlinTestJunit5",
+    "kotlinCoroutinesTest",
+]
+testcontainers = [
+    "postgresql",
+    "testcontainersJunitJupiter",
+    "testcontainersPostgresql",
+    "testcontainersR2dbc",
+    "springBootTestcontainers",
+]
+kotest = ["kotestAssertionsCoreJvm"]
+mockk = ["mockk", "springmockk"]
+
+[plugins]
+springboot = { id = "org.springframework.boot", version.ref = "springboot" }
+dependencyManagement = { id = "io.spring.dependency-management", version.ref = "springDependencyManagement" }
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlinPluginSpring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
+testLogger = { id = "com.adarshr.test-logger", version.ref = "testLogger" }
