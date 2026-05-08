@@ -22,9 +22,9 @@ import reactor.test.StepVerifier
 import java.time.Duration
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class IntegrationTests {
+class IntegrationTest {
     companion object {
-        private val log = LoggerFactory.getLogger(IntegrationTests::class.java)
+        private val log = LoggerFactory.getLogger(IntegrationTest::class.java)
     }
 
     @LocalServerPort
