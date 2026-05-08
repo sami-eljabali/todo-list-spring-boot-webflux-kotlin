@@ -1,5 +1,6 @@
 package org.eljabali.sami.todo.application
 
+import org.eljabali.sami.todo.interfaces.Uris.TODOS
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -45,10 +46,12 @@ class SecurityConfig {
             csrf { disable() }
             httpBasic { }
             authorizeExchange {
-                authorize(pathMatchers(HttpMethod.GET, "/v1/todos/**"), permitAll)
-                authorize(pathMatchers(HttpMethod.DELETE, "/v1/todos/**"), hasRole("ADMIN"))
-                authorize("/v1/todos/**", authenticated)
+                authorize(pathMatchers(HttpMethod.GET, TODOS.endpoints()), permitAll)
+                authorize(pathMatchers(HttpMethod.DELETE, TODOS.endpoints()), hasRole("ADMIN"))
+                authorize(TODOS.endpoints(), authenticated)
                 authorize(anyExchange, permitAll)
             }
         }
+
+    private fun String.endpoints(): String = "$this/**"
 }
