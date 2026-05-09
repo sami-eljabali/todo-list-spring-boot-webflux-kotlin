@@ -18,17 +18,21 @@ import org.springframework.web.bind.annotation.RestController
 import java.net.URI
 
 @RestController
-class TodoController(private val todos: TodoRepository) {
-
+class TodoController(
+    private val todos: TodoRepository,
+) {
     @GetMapping(Uris.TODOS)
     fun findAll(): Flow<Todo> = todos.findAll()
 
     @GetMapping(Uris.TODOS_ID)
-    suspend fun findOne(@PathVariable id: Long): Todo =
-        todos.findById(id) ?: throw TodoNotFoundException(id)
+    suspend fun findOne(
+        @PathVariable id: Long,
+    ): Todo = todos.findById(id) ?: throw TodoNotFoundException(id)
 
     @PostMapping(Uris.TODOS)
-    suspend fun save(@RequestBody body: CreateTodoCommand): ResponseEntity<Any> {
+    suspend fun save(
+        @RequestBody body: CreateTodoCommand,
+    ): ResponseEntity<Any> {
         val saved = todos.save(Todo(title = body.title))
         return ResponseEntity.created(URI.create("${Uris.TODOS}/${saved.id}")).build()
     }
@@ -54,7 +58,9 @@ class TodoController(private val todos: TodoRepository) {
     }
 
     @DeleteMapping(Uris.TODOS_ID)
-    suspend fun deleteById(@PathVariable id: Long): ResponseEntity<Any> {
+    suspend fun deleteById(
+        @PathVariable id: Long,
+    ): ResponseEntity<Any> {
         val todo = todos.findById(id) ?: throw TodoNotFoundException(id)
         todos.delete(todo)
         return ResponseEntity.noContent().build()

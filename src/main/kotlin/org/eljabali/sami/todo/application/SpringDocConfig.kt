@@ -13,8 +13,6 @@ import org.springframework.context.annotation.Configuration
     scheme = "basic",
 )
 class SpringDocConfig {
-
     @Bean
-    fun openApi(appProperties: AppProperties): OpenAPI =
-        OpenAPI().info(Info().title("TodoList API").version(appProperties.version))
+    fun openApi(appProperties: AppProperties): OpenAPI = OpenAPI().info(Info().title("TodoList API").version(appProperties.version))
 }

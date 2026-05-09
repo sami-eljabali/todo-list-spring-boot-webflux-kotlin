@@ -8,8 +8,9 @@ import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 
 @Component
-class DataInitializer(private val todos: TodoRepository) {
-
+class DataInitializer(
+    private val todos: TodoRepository,
+) {
     @EventListener(value = [ApplicationReadyEvent::class])
     fun init() {
         runBlocking {

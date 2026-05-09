@@ -9,8 +9,9 @@ import org.springframework.web.server.ServerWebExchange
 
 @RestControllerAdvice
 class RestWebExceptionHandler {
-
     @ExceptionHandler(TodoNotFoundException::class)
-    fun handleTodoNotFoundException(ex: TodoNotFoundException, exchange: ServerWebExchange): ResponseEntity<Any> =
-        ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to ex.message))
+    fun handleTodoNotFoundException(
+        ex: TodoNotFoundException,
+        exchange: ServerWebExchange,
+    ): ResponseEntity<Any> = ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to ex.message))
 }

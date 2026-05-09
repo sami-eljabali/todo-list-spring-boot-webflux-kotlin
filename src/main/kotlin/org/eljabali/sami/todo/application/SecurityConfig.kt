@@ -18,13 +18,13 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource
 
 @Configuration
 class SecurityConfig {
-
     @Bean
     fun corsConfigurationSource(appProperties: AppProperties): CorsConfigurationSource {
-        val configuration = CorsConfiguration().apply {
-            allowedOrigins = appProperties.allowedOriginUrls?.split(",")
-            allowedMethods = listOf("GET", "POST")
-        }
+        val configuration =
+            CorsConfiguration().apply {
+                allowedOrigins = appProperties.allowedOriginUrls?.split(",")
+                allowedMethods = listOf("GET", "POST")
+            }
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source
@@ -33,10 +33,19 @@ class SecurityConfig {
     @Bean
     fun userDetailsService(): ReactiveUserDetailsService {
         val user = User.withDefaultPasswordEncoder()
-        val users = listOf<UserDetails>(
-            user.username("user").password("password").roles("USER").build(),
-            user.username("admin").password("password").roles("USER", "ADMIN").build(),
-        )
+        val users =
+            listOf<UserDetails>(
+                user
+                    .username("user")
+                    .password("password")
+                    .roles("USER")
+                    .build(),
+                user
+                    .username("admin")
+                    .password("password")
+                    .roles("USER", "ADMIN")
+                    .build(),
+            )
         return MapReactiveUserDetailsService(users)
     }
 

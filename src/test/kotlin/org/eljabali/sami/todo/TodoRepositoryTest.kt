@@ -25,11 +25,12 @@ import org.testcontainers.utility.MountableFile
 class TodoRepositoryTest {
     companion object {
         @Container
-        private val postgres: PostgreSQLContainer<*> = PostgreSQLContainer<Nothing>("postgres:16")
-            .withCopyFileToContainer(
-                MountableFile.forClasspathResource("init.sql"),
-                "/docker-entrypoint-initdb.d/init.sql",
-            )
+        private val postgres: PostgreSQLContainer<*> =
+            PostgreSQLContainer<Nothing>("postgres:16")
+                .withCopyFileToContainer(
+                    MountableFile.forClasspathResource("init.sql"),
+                    "/docker-entrypoint-initdb.d/init.sql",
+                )
 
         @DynamicPropertySource
         @JvmStatic
@@ -46,9 +47,10 @@ class TodoRepositoryTest {
     lateinit var todos: TodoRepository
 
     @BeforeEach
-    fun setup() = runTest {
-        todos.deleteAll()
-    }
+    fun setup() =
+        runTest {
+            todos.deleteAll()
+        }
 
     @Test
     fun testRepositoryExists() {
@@ -56,31 +58,33 @@ class TodoRepositoryTest {
     }
 
     @Test
-    fun testInsertAndQuery() = runTest {
-        val saved = todos.save(Todo(title = "test title"))
+    fun testInsertAndQuery() =
+        runTest {
+            val saved = todos.save(Todo(title = "test title"))
 
-        saved.id shouldNotBe null
+            saved.id shouldNotBe null
 
-        val found = todos.findById(saved.id!!)
-        assertNotNull(found)
-        found!!.title shouldBe "test title"
-        found.status shouldBe Status.TODO
+            val found = todos.findById(saved.id!!)
+            assertNotNull(found)
+            found!!.title shouldBe "test title"
+            found.status shouldBe Status.TODO
 
-        todos.save(found.copy(title = "update title", status = Status.DONE))
+            todos.save(found.copy(title = "update title", status = Status.DONE))
 
-        val updated = todos.findById(saved.id!!)
-        updated!!.title shouldBe "update title"
-        updated.status shouldBe Status.DONE
-    }
+            val updated = todos.findById(saved.id!!)
+            updated!!.title shouldBe "update title"
+            updated.status shouldBe Status.DONE
+        }
 
     @Test
-    fun testFindByStatus() = runTest {
-        todos.save(Todo(title = "done task", status = Status.DONE))
-        todos.save(Todo(title = "pending task", status = Status.TODO))
+    fun testFindByStatus() =
+        runTest {
+            todos.save(Todo(title = "done task", status = Status.DONE))
+            todos.save(Todo(title = "pending task", status = Status.TODO))
 
-        val doneTodos = todos.findByStatus(Status.DONE)
+            val doneTodos = todos.findByStatus(Status.DONE)
 
-        doneTodos.count() shouldBe 1
-        doneTodos.first().status shouldBe Status.DONE
-    }
+            doneTodos.count() shouldBe 1
+            doneTodos.first().status shouldBe Status.DONE
+        }
 }

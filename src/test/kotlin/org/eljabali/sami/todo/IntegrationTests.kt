@@ -41,61 +41,73 @@ class IntegrationTests {
 
     @Test
     fun willLoadTodos() {
-        client.get().uri(Uris.TODOS)
+        client
+            .get()
+            .uri(Uris.TODOS)
             .exchangeToFlux {
                 assertTrue(it.statusCode().is2xxSuccessful)
                 it.bodyToFlux(Todo::class.java)
-            }
-            .`as` { StepVerifier.create(it) }
+            }.`as` { StepVerifier.create(it) }
             .consumeNextWith { assertThat(it.title).isEqualTo("Kotlin Coroutines Example") }
             .verifyComplete()
     }
 
     @Test
     fun testCrudOperations() {
-        val createdResult = client.mutate().filter(basicAuthentication("user", "password")).build()
-            .post()
-            .uri(Uris.TODOS).contentType(MediaType.APPLICATION_JSON).bodyValue(CreateTodoCommand(title = "test todo"))
-            .retrieve().toEntity<Any>()
-            .block(Duration.ofMillis(1000))
+        val createdResult =
+            client
+                .mutate()
+                .filter(basicAuthentication("user", "password"))
+                .build()
+                .post()
+                .uri(Uris.TODOS)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(CreateTodoCommand(title = "test todo"))
+                .retrieve()
+                .toEntity<Any>()
+                .block(Duration.ofMillis(1000))
         val savedUri: String = createdResult!!.headers["Location"]!![0]
         assertNotNull(savedUri)
 
-        client.get().uri(savedUri)
+        client
+            .get()
+            .uri(savedUri)
             .exchangeToMono {
                 assertTrue(it.statusCode().is2xxSuccessful)
                 it.bodyToMono(Todo::class.java)
-            }
-            .`as` { StepVerifier.create(it) }
+            }.`as` { StepVerifier.create(it) }
             .consumeNextWith {
                 assertThat(it.title).isEqualTo("test todo")
                 assertThat(it.status).isEqualTo(Status.TODO)
                 assertThat(it.createdAt).isNotNull()
                 assertThat(it.createdBy).isNotNull()
-            }
-            .verifyComplete()
+            }.verifyComplete()
 
-        client.mutate().filter(basicAuthentication("user", "password")).build()
+        client
+            .mutate()
+            .filter(basicAuthentication("user", "password"))
+            .build()
             .put()
-            .uri("$savedUri/status").contentType(MediaType.APPLICATION_JSON)
+            .uri("$savedUri/status")
+            .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(UpdateStatusCommand(status = Status.WORK_IN_PROGRESS))
             .exchangeToMono {
                 assertTrue(it.statusCode().is2xxSuccessful)
                 Mono.empty<Nothing>()
             }.block(Duration.ofMillis(1000))
 
-        client.get().uri(savedUri)
+        client
+            .get()
+            .uri(savedUri)
             .exchangeToMono {
                 assertTrue(it.statusCode().is2xxSuccessful)
                 it.bodyToMono(Todo::class.java)
-            }
-            .`as` { StepVerifier.create(it) }
+            }.`as` { StepVerifier.create(it) }
             .consumeNextWith {
                 assertThat(it.title).isEqualTo("test todo")
                 assertThat(it.status).isEqualTo(Status.WORK_IN_PROGRESS)
                 assertThat(it.createdAt).isNotNull()
                 assertThat(it.createdBy).isNotNull()
-            }
-            .verifyComplete()
+            }.verifyComplete()
     }
 }

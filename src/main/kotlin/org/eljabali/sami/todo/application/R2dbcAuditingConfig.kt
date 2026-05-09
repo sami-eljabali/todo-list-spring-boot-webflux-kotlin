@@ -10,15 +10,18 @@ import reactor.core.publisher.Mono
 @Configuration
 @EnableR2dbcAuditing
 class R2dbcAuditingConfig {
-
     @Bean
     fun auditorAware(): ReactiveAuditorAware<String> =
         ReactiveAuditorAware {
-            ReactiveSecurityContextHolder.getContext()
+            ReactiveSecurityContextHolder
+                .getContext()
                 .flatMap { ctx ->
                     val auth = ctx.authentication
-                    if (auth != null && auth.isAuthenticated) Mono.just(auth.name)
-                    else Mono.empty()
+                    if (auth != null && auth.isAuthenticated) {
+                        Mono.just(auth.name)
+                    } else {
+                        Mono.empty()
+                    }
                 }
         }
 }

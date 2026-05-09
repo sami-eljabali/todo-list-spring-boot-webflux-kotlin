@@ -29,7 +29,6 @@ import org.springframework.test.web.reactive.server.WebTestClient
     excludeAutoConfiguration = [ReactiveUserDetailsServiceAutoConfiguration::class, ReactiveWebSecurityAutoConfiguration::class],
 )
 class TodoControllerTest {
-
     @Autowired
     private lateinit var client: WebTestClient
 
@@ -41,25 +40,40 @@ class TodoControllerTest {
     @Test
     fun `get all todos`() {
         every { todos.findAll() }.returns(flowOf(todo))
-        client.get().uri(Uris.TODOS).exchange().expectStatus().isOk
+        client
+            .get()
+            .uri(Uris.TODOS)
+            .exchange()
+            .expectStatus()
+            .isOk
         verify(exactly = 1) { todos.findAll() }
     }
 
     @Test
     fun `get single todo`() {
         coEvery { todos.findById(any<Long>()) }.returns(todo)
-        client.get().uri("${Uris.TODOS}/1").exchange().expectStatus().isOk
+        client
+            .get()
+            .uri("${Uris.TODOS}/1")
+            .exchange()
+            .expectStatus()
+            .isOk
         coVerify(exactly = 1) { todos.findById(any<Long>()) }
     }
 
     @Test
     fun `create a todo`() {
         coEvery { todos.save(any<Todo>()) }.returns(todo)
-        client.post()
-            .uri(Uris.TODOS).contentType(MediaType.APPLICATION_JSON).bodyValue(CreateTodoCommand(title = "test title"))
+        client
+            .post()
+            .uri(Uris.TODOS)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(CreateTodoCommand(title = "test title"))
             .exchange()
-            .expectStatus().isCreated
-            .expectHeader().location("${Uris.TODOS}/1")
+            .expectStatus()
+            .isCreated
+            .expectHeader()
+            .location("${Uris.TODOS}/1")
         coVerify(exactly = 1) { todos.save(any<Todo>()) }
     }
 
@@ -67,10 +81,13 @@ class TodoControllerTest {
     fun `update a todo`() {
         coEvery { todos.findById(any<Long>()) }.returns(todo)
         coEvery { todos.save(any<Todo>()) }.returns(todo.copy(title = "update title"))
-        client.put()
-            .uri("${Uris.TODOS}/1").bodyValue(UpdateTodoCommand(title = "update title"))
+        client
+            .put()
+            .uri("${Uris.TODOS}/1")
+            .bodyValue(UpdateTodoCommand(title = "update title"))
             .exchange()
-            .expectStatus().isNoContent
+            .expectStatus()
+            .isNoContent
         coVerify(exactly = 1) { todos.findById(any<Long>()) }
         coVerify(exactly = 1) { todos.save(any<Todo>()) }
     }
@@ -79,10 +96,13 @@ class TodoControllerTest {
     fun `mark a todo as completed`() {
         coEvery { todos.findById(any<Long>()) }.returns(todo)
         coEvery { todos.save(any<Todo>()) }.returns(todo.copy(status = Status.DONE))
-        client.put()
-            .uri("${Uris.TODOS}/1/status").bodyValue(UpdateStatusCommand(status = Status.DONE))
+        client
+            .put()
+            .uri("${Uris.TODOS}/1/status")
+            .bodyValue(UpdateStatusCommand(status = Status.DONE))
             .exchange()
-            .expectStatus().isNoContent
+            .expectStatus()
+            .isNoContent
         coVerify(exactly = 1) { todos.findById(any<Long>()) }
         coVerify(exactly = 1) { todos.save(any<Todo>()) }
     }
@@ -91,7 +111,12 @@ class TodoControllerTest {
     fun `delete a todo`() {
         coEvery { todos.findById(any<Long>()) }.returns(todo)
         coEvery { todos.delete(any<Todo>()) } just Runs
-        client.delete().uri("${Uris.TODOS}/1").exchange().expectStatus().isNoContent
+        client
+            .delete()
+            .uri("${Uris.TODOS}/1")
+            .exchange()
+            .expectStatus()
+            .isNoContent
         coVerify(exactly = 1) { todos.findById(any<Long>()) }
         coVerify(exactly = 1) { todos.delete(any<Todo>()) }
     }
@@ -99,7 +124,12 @@ class TodoControllerTest {
     @Test
     fun `get single todo with non-existing id`() {
         coEvery { todos.findById(any<Long>()) }.returns(null)
-        client.get().uri("${Uris.TODOS}/1").exchange().expectStatus().isNotFound
+        client
+            .get()
+            .uri("${Uris.TODOS}/1")
+            .exchange()
+            .expectStatus()
+            .isNotFound
         coVerify(exactly = 1) { todos.findById(any<Long>()) }
     }
 }
