@@ -12,9 +12,9 @@ data class Todo(
     @Id
     val id: Long? = null,
     @Column(value = "title")
-    var title: String,
+    val title: String,
     @Column(value = "status")
-    var status: Status = Status.TODO,
+    val status: Status = Status.TODO,
     @Column(value = "created_at")
     @CreatedDate
     val createdAt: LocalDateTime? = null,
