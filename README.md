@@ -51,9 +51,6 @@ Swagger UI is at `http://localhost:9090/actuator/webjars/swagger-ui/index.html`.
 | Command | What it runs |
 |---|---|
 | `./gradlew test` | Unit + controller tests (no Docker required) |
-| `./gradlew controllerTest` | `@WebFluxTest` slice tests only |
-| `./gradlew repositoryTest` | `@DataR2dbcTest` slice tests (Testcontainers — needs Docker) |
-| `./gradlew integrationTest` | Full `@SpringBootTest` tests (needs Docker Compose running) |
 | `./gradlew check` | All of the above |
 
 ## Package structure
