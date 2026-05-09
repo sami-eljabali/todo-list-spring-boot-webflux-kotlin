@@ -1,0 +1,89 @@
+# ─── Server ───────────────────────────────────────────────────────────────────
+server:
+  shutdown: graceful
+
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+  # ─── HTTP ───────────────────────────────────────────────────────────────────
+  http:
+    codecs:
+      max-in-memory-size: 4MB
+    converters:
+      preferred-json-mapper: jackson
+
+  # ─── WebFlux ────────────────────────────────────────────────────────────────
+  webflux:
+    format:
+      date: yyyy-MM-dd
+      date-time: "yyyy-MM-dd'T'HH:mm:ss"
+      time: HH:mm:ss
+    problemdetails:
+      enabled: true
+
+  # ─── Threads ────────────────────────────────────────────────────────────────
+  threads:
+    virtual:
+      enabled: true
+
+  # ─── R2DBC ──────────────────────────────────────────────────────────────────
+  r2dbc:
+    url: r2dbc:postgresql://localhost/todolist
+    username: user
+    password: password
+    pool:
+      initial-size: 5
+      max-size: 20
+      max-idle-time: 15m
+    properties:
+      lock_timeout: 10s
+      statement_timeout: 30s
+
+  transaction:
+    default-timeout: 30s
+
+  # ─── SQL Init ───────────────────────────────────────────────────────────────
+  sql:
+    init:
+      mode: always
+
+# ─── Actuator ─────────────────────────────────────────────────────────────────
+management:
+  server:
+    port: 9090
+  endpoints:
+    web:
+      exposure:
+        include: health,info,env,openapi,swaggerui
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-components: always
+      show-details: always
+
+# ─── SpringDoc ────────────────────────────────────────────────────────────────
+springdoc:
+  show-actuator: true
+  use-management-port: true
+  swagger-ui:
+    operationsSorter: alpha
+    tagsSorter: alpha
+
+# ─── Logging ──────────────────────────────────────────────────────────────────
+logging:
+  level:
+    root: INFO
+    org.eljabali.sami.todo: DEBUG
+    sql: TRACE
+    web: DEBUG
+    r2dbc: DEBUG
+  group:
+    r2dbc: "org.springframework.r2dbc,org.springframework.data.r2dbc"
+
+# ─── App ──────────────────────────────────────────────────────────────────────
+app:
+  allowed-origin-urls: "http://localhost:3000,http://localhost:4200"
+  version: "1.0-dev-${git.commit.id:local}"
+  base-url: http://localhost:8080
