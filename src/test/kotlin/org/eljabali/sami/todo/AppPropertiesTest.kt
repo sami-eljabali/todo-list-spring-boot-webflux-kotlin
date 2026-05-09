@@ -1,6 +1,7 @@
 package org.eljabali.sami.todo
 
 import org.assertj.core.api.Assertions.assertThat
+import org.eljabali.sami.todo.application.AppProperties
 import org.junit.jupiter.api.Test
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.context.runner.ApplicationContextRunner
@@ -10,9 +11,7 @@ class AppPropertiesTest {
     companion object {
         @Configuration
         @EnableConfigurationProperties(value = [AppProperties::class])
-        class TestConfig {
-
-        }
+        class TestConfig
     }
 
     private val contextRunner = ApplicationContextRunner()

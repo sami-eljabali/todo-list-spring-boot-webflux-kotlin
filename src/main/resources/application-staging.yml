@@ -1,0 +1,10 @@
+logging:
+  level:
+    org.eljabali.sami.todo: INFO
+  file:
+    name: app.log
+
+spring:
+  sql:
+    init:
+      mode: never

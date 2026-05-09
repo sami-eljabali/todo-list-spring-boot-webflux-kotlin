@@ -1,4 +1,4 @@
-package org.eljabali.sami.todo
+package org.eljabali.sami.todo.domain.model
 
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.CreatedDate
@@ -11,17 +11,13 @@ import java.time.LocalDateTime
 data class Todo(
     @Id
     val id: Long? = null,
-
     @Column(value = "title")
-    var title: String,
-
+    val title: String,
     @Column(value = "status")
-    var status: Status = Status.TODO,
-
+    val status: Status = Status.TODO,
     @Column(value = "created_at")
     @CreatedDate
     val createdAt: LocalDateTime? = null,
-
     @Column(value = "created_by")
     @CreatedBy
     val createdBy: String? = null,

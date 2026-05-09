@@ -1,0 +1,20 @@
+logging:
+  level:
+    sql: INFO
+    web: INFO
+    r2dbc: INFO
+    org.eljabali.sami.todo: INFO
+  file:
+    name: app.log
+
+spring:
+  sql:
+    init:
+      mode: never
+
+# do not expose info/env for the public
+management:
+  endpoints:
+    web:
+      exposure:
+        include: openapi,swaggerui,health

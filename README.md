@@ -1,137 +1,91 @@
-<div id="top"></div>
+# Spring Boot WebFlux Kotlin Template
 
-<h2 align="center">Todo List (Spring Boot)</h2>
-<br>
+A GitHub template for reactive REST APIs using Spring Boot 4, Kotlin coroutines, and R2DBC.
 
-## Tech Stack
-* [Kotlin](https://kotlinlang.org/)
-* [PostgreSQL](https://www.postgresql.org)
-* [Spring Boot 2.6.3](https://spring.io)
-  * [WebFlux using Coroutines](https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html) 
-  * [R2DBC](https://spring.io/projects/spring-data-r2dbc) 
+## Stack
 
-## Features
-* Mockk + Spring Mockk to mock beans.
-* Kotest assertions provides fluent Kotlin DSL API for assertions in tests.
-* Spring Doc to expose OpenAPI via Swagger at http://localhost:9090/actuator/webjars/swagger-ui/index.html
-* Docker Compose to serve a running Postgres when running the application.
-* Test persistence with a Postgres database running in TestContainers.
+| | |
+|---|---|
+| **Language** | Kotlin 2.3 |
+| **Runtime** | Java 25 (Amazon Corretto), virtual threads enabled |
+| **Framework** | Spring Boot 4 — WebFlux (reactive, non-blocking) |
+| **Database** | PostgreSQL via R2DBC (coroutine-first: `CoroutineCrudRepository`) |
+| **Security** | Spring Security — HTTP Basic (swap for OAuth2 Resource Server in production) |
+| **API Docs** | SpringDoc OpenAPI 3 — Swagger UI at `:9090/actuator/webjars/swagger-ui/index.html` |
+| **Build** | Gradle 9 with version catalog (`gradle/libs.versions.toml`) |
+| **Linting** | Kotlinter |
+
+## Using this template
+
+Click **Use this template** on GitHub, then:
+
+1. Replace the root package `org.eljabali.sami.todo` with your own across all source files.
+2. Rename the project in [`settings.gradle.kts`](settings.gradle.kts).
+3. Update `spring.r2dbc.url` / credentials in [`application.properties`](src/main/resources/application.properties).
+4. Add your schema SQL to [`pg-initdb.d/`](pg-initdb.d/) and [`src/test/resources/init.sql`](src/test/resources/init.sql).
 
 ## Prerequisites
-* [Java JDK Oracle (SE) 17](https://www.oracle.com/java/technologies/downloads/#java17)
-* [IntelliJ IDEA CE](https://www.jetbrains.com/idea/download/)
 
-## Libraries
-* [Jackson](https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin)
-* [Kotest](https://mvnrepository.com/artifact/io.kotest/kotest-assertions-core-jvm)
-* [Mockk](https://mvnrepository.com/artifact/io.mockk/mockk)
-* [PostgreSQL Driver SQL](https://mvnrepository.com/artifact/org.postgresql/postgresql)
-* [Spring Boot Starter Security](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security)
-* [Spring Data R2DBC SQL](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-r2dbc)
-* [Spring Mockk](https://mvnrepository.com/artifact/com.ninja-squad/springmockk)
-* [Spring Reactive Webflux](https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webflux)
-* [Test Containers](https://mvnrepository.com/artifact/org.testcontainers/junit-jupiter)
+- Java 25 ([Amazon Corretto](https://aws.amazon.com/corretto/))
+- Docker (for local Postgres and Testcontainers)
 
-## Troubleshooting
+## Local development
 
-<!-- Ensure Java Home variable is set -->
-<details>
-<summary>Ensure Java Home variable is set</summary>
+Start Postgres:
 
 ```bash
-echo $JAVA_HOME
+docker compose up -d
 ```
-Should see
-```
-/Library/Java/JavaVirtualMachines/jdk-17.0.1.jdk/Contents/Home
-```
-If not, you either don't have it downloaded, or Java Home variable is not set. <br>
-</details>
 
-<!-- Ensure Java version is downloaded -->
-<details>
-<summary>Ensure Java version is downloaded</summary>
+Run the app:
 
 ```bash
-/usr/libexec/java_home -V
+./gradlew bootRun
 ```
-Should see installed JDKs:
-```
-17.0.1 (x86_64) "Oracle Corporation" - "Java SE 17.0.1" /Library/Java/JavaVirtualMachines/jdk-17.0.1.jdk/Contents/Home
-16.0.1 (x86_64) "Oracle Corporation" - "OpenJDK 16.0.1" /Users/user/Library/Java/JavaVirtualMachines/openjdk-16.0.1/Contents/Home
-11.0.13 (x86_64) "Oracle Corporation" - "Java SE 11.0.13" /Library/Java/JavaVirtualMachines/jdk-11.0.13.jdk/Contents/Home
-...
-```
-If not found, have not downloaded the JDK properly.<br>
-</details>
 
-<!-- Ensure correct v17 is showing -->
-<details>
-<summary>Ensure correct v17 is showing</summary>
+The API is available at `http://localhost:8080/v1/todos`.  
+Swagger UI is at `http://localhost:9090/actuator/webjars/swagger-ui/index.html`.
 
-```bash
-/usr/libexec/java_home -v 17
-```
-Should see
-```
-/Library/Java/JavaVirtualMachines/jdk-17.0.1.jdk/Contents/Home
-```
-If you see a non-Oracle JDK, like open JDK, you need to uninstall it first. <br>
-</details>
+## Tests
 
-<!-- Set Java Home variable -->
-<details>
-<summary>Set Java Home variable</summary>
+| Command | What it runs |
+|---|---|
+| `./gradlew test` | Unit + controller tests (no Docker required) |
+| `./gradlew check` | All of the above |
 
-Find out what shell version you're using:
-```bash
-echo $SHELL
-```
-If you're using [ZSH](https://ohmyz.sh): you ought to be updating `~/.zshrc` else `~/.bash_profile` for the following steps. <br>
+## Package structure
 
-Update your profile:
-```bash
-[emacs/vim/atom] ~/.zshrc
 ```
-Add the following line:
-```bash
-export JAVA_HOME=$(/usr/libexec/java_home -v 17)
+org.eljabali.sami.todo
+├── Application.kt                  entry point
+├── domain/
+│   ├── model/                      entities and enums
+│   ├── repository/                 CoroutineCrudRepository interfaces
+│   └── exception/                  domain exceptions
+├── application/                    Spring config classes
+├── interfaces/
+│   ├── Uris.kt                     centralized URI constants
+│   ├── TodoController.kt           REST controllers
+│   └── RestWebExceptionHandler.kt  @RestControllerAdvice
+└── shared/
+    └── model/                      request/response DTOs
 ```
-Update shell profile
-```bash
-source ~/.zshrc
-```
-</details>
 
-## Build & Run Project
-<!-- Clean Project -->
-<details>
-<summary>Clean Project</summary>
+## Build
 
 ```bash
-./gradlew clean
+./gradlew build          # compile + all tests
+./gradlew bootJar        # fat JAR → build/libs/
+./gradlew lintKotlin     # Kotlinter lint check
+./gradlew formatKotlin   # Kotlinter auto-format
 ```
-</details>
 
-<!-- Build Project -->
-<details>
-<summary>Build Project</summary>
+## Docker
+
+Build and run the production image:
 
 ```bash
-./gradlew build
+./gradlew bootJar
+docker build -t todo-app .
+docker run -p 8080:8080 todo-app
 ```
-</details>
-
-<!-- Run Project -->
-<details>
-<summary>Run Project</summary>
-
-```bash
-./gradlew bootRun --args='--spring.profiles.active=dev'
-
-// or
-./gradlew build
-java -jar build/todo-xxxx.jar 
-```
-</details>
-
