@@ -2,7 +2,7 @@
 java = "25"
 springboot = "4.1.0"
 springDependencyManagement = "1.1.7"
-kotlin = "2.4.0"
+kotlin = "2.4.10"
 kotlinCoroutines = "1.11.0"
 kotlinter = "5.6.0"
 testLogger = "4.0.0"
