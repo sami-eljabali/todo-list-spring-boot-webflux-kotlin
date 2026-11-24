@@ -16,6 +16,54 @@ updates:
       time: '06:00'
     open-pull-requests-limit: 100
     groups:
-      backend-deps:
+      # Evaluated top to bottom: a dependency goes to the FIRST group whose
+      # patterns it matches.
+      # Gradle dependencies are matched as groupId:artifactId, so the separator
+      # is a colon: "org.testcontainers:*" matches, "org.testcontainers.*" does not.
+      # Dependencies sharing a version reference in gradle/libs.versions.toml must
+      # stay in one group, otherwise one version bump opens two pull requests
+      # editing the same line.
+      gradle-plugins:
         patterns:
-          - "*"    
+          - "org.jmailen.kotlinter*"
+          - "com.adarshr.test-logger*"
+
+      # Spring Boot / Spring Framework / SpringDoc, including the Spring test
+      # starters and spring-security-test.
+      spring:
+        patterns:
+          - "org.springframework*"
+          - "org.springdoc*"
+          - "io.spring*"
+
+      # Kotlin runtime, Kotlin Gradle plugins and the Kotlin add-ons.
+      kotlin:
+        patterns:
+          - "org.jetbrains.kotlin*"
+          - "io.projectreactor.kotlin*"
+          - "*jackson-module-kotlin*"
+
+      # Test frameworks and test infrastructure.
+      test:
+        patterns:
+          - "org.junit*"
+          - "org.testcontainers*"
+          - "io.kotest*"
+          - "io.mockk*"
+          - "com.ninja-squad*"
+          - "io.projectreactor:*test*"
+
+      # Database drivers.
+      database:
+        patterns:
+          - "org.postgresql*"
+
+      # Gradle wrapper.
+      gradle:
+        patterns:
+          - "gradle*"
+
+      # Everything else, so a new dependency never gets a pull request of its own.
+      other:
+        patterns:
+          - "*"
