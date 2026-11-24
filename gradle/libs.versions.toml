@@ -1,25 +1,27 @@
 [versions]
 java = "25"
-springboot = "4.1.1"
+springboot = "4.2.0"
 springDependencyManagement = "1.1.7"
 kotlin = "2.4.10"
 kotlinCoroutines = "1.11.0"
 kotlinter = "5.7.0"
 testLogger = "4.0.0"
-kotest = "6.2.4"
-mockk = "1.14.11"
+kotest = "6.2.7"
+mockk = "1.14.12"
 springmockk = "5.0.1"
-springdoc = "3.1.1"
+springdoc = "3.2.1"
 
 [libraries]
 # Web
 starterWebflux = { module = "org.springframework.boot:spring-boot-starter-webflux" }
+starterWebclient = { module = "org.springframework.boot:spring-boot-starter-webclient" }
 
 # Validation
 starterValidation = { module = "org.springframework.boot:spring-boot-starter-validation" }
 
 # Security
 starterSecurity = { module = "org.springframework.boot:spring-boot-starter-security" }
+starterSecurityTest = { module = "org.springframework.boot:spring-boot-starter-security-test" }
 
 # Actuator
 starterActuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
@@ -37,16 +39,19 @@ reactorKotlinExtensions = { module = "io.projectreactor.kotlin:reactor-kotlin-ex
 kotlinReflect = { module = "org.jetbrains.kotlin:kotlin-reflect" }
 kotlinCoroutinesReactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "kotlinCoroutines" }
 
+# Local infrastructure
+dockerCompose = { module = "org.springframework.boot:spring-boot-docker-compose" }
+
 # Test dependencies
 springBootStarterTest = { module = "org.springframework.boot:spring-boot-starter-test" }
 webfluxTest = { module = "org.springframework.boot:spring-boot-starter-webflux-test" }
+webclientTest = { module = "org.springframework.boot:spring-boot-starter-webclient-test" }
 dataR2dbcTest = { module = "org.springframework.boot:spring-boot-starter-data-r2dbc-test" }
-springSecurityTest = { module = "org.springframework.security:spring-security-test" }
 reactorTest = { module = "io.projectreactor:reactor-test" }
+springBootTestcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
 testcontainersJunitJupiter = { module = "org.testcontainers:testcontainers-junit-jupiter" }
 testcontainersPostgresql = { module = "org.testcontainers:testcontainers-postgresql" }
 testcontainersR2dbc = { module = "org.testcontainers:testcontainers-r2dbc" }
-springBootTestcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
 kotlinTestJunit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5" }
 kotlinCoroutinesTest = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutines" }
 kotestAssertionsCoreJvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest" }
@@ -56,21 +61,41 @@ springmockk = { module = "com.ninja-squad:springmockk", version.ref = "springmoc
 postgresql = { module = "org.postgresql:postgresql" }
 
 [bundles]
-kotlinSupport = [
+spring = [
+    "springDoc",
+    "r2dbcPostgresql",
+    "starterWebflux",
+    "starterWebclient",
+    "starterValidation",
+    "starterSecurity",
+    "starterActuator",
+    "starterDataR2dbc",
+]
+
+springtest = [
+    "springBootStarterTest",
+    "webfluxTest",
+    "webclientTest",
+    "dataR2dbcTest",
+    "starterSecurityTest",
+    "reactorTest",
+]
+
+kotlin = [
     "jacksonKotlin",
     "kotlinReflect",
     "reactorKotlinExtensions",
     "kotlinCoroutinesReactor",
 ]
-testcore = [
-    "springBootStarterTest",
-    "webfluxTest",
-    "dataR2dbcTest",
-    "springSecurityTest",
-    "reactorTest",
+
+kotlintest = [
     "kotlinTestJunit5",
     "kotlinCoroutinesTest",
+    "kotestAssertionsCoreJvm",
+    "mockk",
+    "springmockk",
 ]
+
 testcontainers = [
     "postgresql",
     "testcontainersJunitJupiter",
@@ -78,8 +103,6 @@ testcontainers = [
     "testcontainersR2dbc",
     "springBootTestcontainers",
 ]
-kotest = ["kotestAssertionsCoreJvm"]
-mockk = ["mockk", "springmockk"]
 
 [plugins]
 springboot = { id = "org.springframework.boot", version.ref = "springboot" }

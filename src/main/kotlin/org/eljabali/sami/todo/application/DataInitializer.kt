@@ -1,6 +1,5 @@
 package org.eljabali.sami.todo.application
 
-import kotlinx.coroutines.runBlocking
 import org.eljabali.sami.todo.domain.model.Todo
 import org.eljabali.sami.todo.domain.repository.TodoRepository
 import org.springframework.boot.context.event.ApplicationReadyEvent
@@ -14,10 +13,8 @@ class DataInitializer(
     private val todos: TodoRepository,
 ) {
     @EventListener(value = [ApplicationReadyEvent::class])
-    fun init() {
-        runBlocking {
-            todos.deleteAll()
-            todos.save(Todo(title = "Kotlin Coroutines Example"))
-        }
+    suspend fun init() {
+        todos.deleteAll()
+        todos.save(Todo(title = "Kotlin Coroutines Example"))
     }
 }

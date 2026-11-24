@@ -22,21 +22,18 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.starterWebflux)
-    implementation(libs.starterValidation)
-    implementation(libs.starterSecurity)
-    implementation(libs.starterActuator)
-    implementation(libs.starterDataR2dbc)
-    implementation(libs.r2dbcPostgresql)
-    implementation(libs.springDoc)
-    implementation(libs.bundles.kotlinSupport)
+    implementation(libs.bundles.spring)
+    implementation(libs.bundles.kotlin)
 
-    testImplementation(libs.bundles.testcore) {
+    // Starts the services of docker-compose.yml while the application runs in development.
+    // It is not part of the production jar.
+    developmentOnly(libs.dockerCompose)
+
+    testImplementation(libs.bundles.springtest) {
         exclude(module = "mockito-core")
     }
+    testImplementation(libs.bundles.kotlintest)
     testImplementation(libs.bundles.testcontainers)
-    testImplementation(libs.bundles.kotest)
-    testImplementation(libs.bundles.mockk)
     testRuntimeOnly(libs.junitPlatformLauncher)
 }
 
@@ -58,7 +55,6 @@ kotlin {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-    filter { include("**/*Test.class") }
     minHeapSize = "128m"
     maxHeapSize = "2048m"
 }

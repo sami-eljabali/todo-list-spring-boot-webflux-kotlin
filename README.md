@@ -1,59 +1,158 @@
 # Spring Boot WebFlux Kotlin Template
 
-A GitHub template for reactive REST APIs using Spring Boot 4, Kotlin coroutines, and R2DBC.
+[![Build & Test](https://github.com/sami-eljabali/todo-list-spring-boot-webflux-kotlin/actions/workflows/build.yml/badge.svg)](https://github.com/sami-eljabali/todo-list-spring-boot-webflux-kotlin/actions/workflows/build.yml)
+[![Lint](https://github.com/sami-eljabali/todo-list-spring-boot-webflux-kotlin/actions/workflows/lint.yml/badge.svg)](https://github.com/sami-eljabali/todo-list-spring-boot-webflux-kotlin/actions/workflows/lint.yml)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.4.10-blue.svg)](https://kotlinlang.org)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.2.0-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+A GitHub template for reactive REST APIs with Spring Boot 4, Kotlin coroutines, and R2DBC. The
+build, the test suite, and the local database are already wired up, so you can clone it and start
+writing code.
+
+## Highlights
+
+- Reactive from the HTTP layer down to the database, with WebFlux and R2DBC
+- Coroutines throughout, including `CoroutineCrudRepository` for persistence
+- Tests that run against a real PostgreSQL through Testcontainers, so there is no database to install
+- A Docker Compose setup that starts PostgreSQL together with the application
+- OpenAPI documentation and Swagger UI out of the box
 
 ## Stack
 
-| | |
+| Component | Choice |
 |---|---|
-| **Language** | Kotlin 2.3 |
-| **Runtime** | Java 25 (Amazon Corretto), virtual threads enabled |
-| **Framework** | Spring Boot 4 — WebFlux (reactive, non-blocking) |
-| **Database** | PostgreSQL via R2DBC (coroutine-first: `CoroutineCrudRepository`) |
-| **Security** | Spring Security — HTTP Basic (swap for OAuth2 Resource Server in production) |
-| **API Docs** | SpringDoc OpenAPI 3 — Swagger UI at `:9090/actuator/webjars/swagger-ui/index.html` |
-| **Build** | Gradle 9 with version catalog (`gradle/libs.versions.toml`) |
-| **Linting** | Kotlinter |
+| Language | Kotlin 2.4.10 |
+| Runtime | Java 25 (Amazon Corretto), with virtual threads enabled |
+| Framework | Spring Boot 4.2, WebFlux (reactive, non-blocking) |
+| Database | PostgreSQL over R2DBC (`CoroutineCrudRepository`) |
+| Security | Spring Security with HTTP Basic. Swap it for an OAuth2 Resource Server in production. |
+| API docs | SpringDoc OpenAPI 3, Swagger UI at `:9090/swagger-ui/index.html` |
+| Build | Gradle 9.9 with a version catalog (`gradle/libs.versions.toml`) |
+| Linting | Kotlinter |
+| Testing | JUnit 5, Kotest assertions, MockK, Testcontainers (PostgreSQL) |
 
-## Using this template
+> [!NOTE]
+> Kotlin stays on 2.4.10 because ktlint 1.8.0, the version bundled with Kotlinter 5.7.0, fails on
+> the Kotlin 2.4.20 and later compilers with *"Extensions storage is not registered"*. You can move
+> to Kotlin 2.4.2x once a ktlint release that supports it reaches Maven Central.
 
-Click **Use this template** on GitHub, then:
-
-1. Replace the root package `org.eljabali.sami.todo` with your own across all source files.
-2. Rename the project in [`settings.gradle.kts`](settings.gradle.kts).
-3. Update `spring.r2dbc.url` / credentials in [`application.properties`](src/main/resources/application.properties).
-4. Add your schema SQL to [`pg-initdb.d/`](pg-initdb.d/) and [`src/test/resources/init.sql`](src/test/resources/init.sql).
+---
 
 ## Prerequisites
 
+Before you start, install:
+
 - Java 25 ([Amazon Corretto](https://aws.amazon.com/corretto/))
-- Docker (for local Postgres and Testcontainers)
+- Docker, for the local PostgreSQL and for Testcontainers
 
-## Local development
+### Use the template
 
-Start Postgres:
+1. Click **Use this template** on GitHub.
+2. Replace the root package `org.eljabali.sami.todo` with your own across all source files.
+3. Rename the project in [`settings.gradle.kts`](settings.gradle.kts).
+4. Update `spring.r2dbc.url` and the credentials in
+   [`src/main/resources/application.yml`](src/main/resources/application.yml).
+5. Update the schema SQL in [`src/main/resources/schema.sql`](src/main/resources/schema.sql). Both
+   the application and the Testcontainers tests apply it.
 
-```bash
-docker compose up -d
-```
+---
 
-Run the app:
+## Run the application
+
+> [!TIP]
+> No database installed? Skip to [With Testcontainers](#with-testcontainers).
+
+### With Docker Compose
+
+To start the application and its database together, run:
 
 ```bash
 ./gradlew bootRun
 ```
 
-The API is available at `http://localhost:8080/v1/todos`.  
-Swagger UI is at `http://localhost:9090/actuator/webjars/swagger-ui/index.html`.
+The `spring-boot-docker-compose` module sits on the development classpath, so the services in
+`docker-compose.yml` start before the application and stop with it.
+
+### With Testcontainers
+
+The `TestApplication` in the test sources starts the application against a PostgreSQL container
+that Testcontainers manages, so you do not need a local database. Run it from your IDE, or run:
+
+```bash
+./gradlew bootTestRun
+```
+
+### Run the packaged JAR
+
+To run the application as a standalone process, start the database first and then run the
+executable JAR:
+
+1. Start the database:
+
+   ```bash
+   docker compose up -d
+   ```
+
+2. Build the executable JAR:
+
+   ```bash
+   ./gradlew build
+   ```
+
+3. Run the JAR:
+
+   ```bash
+   java -jar build/libs/todo-0.0.1-SNAPSHOT.jar
+   ```
+
+### Explore APIs with Swagger UI
+
+The API is at `http://localhost:8080/v1/todos`, and Swagger UI is at
+`http://localhost:9090/swagger-ui/index.html`. Authenticate with `user` / `password` or
+`admin` / `password`; see `SecurityConfig`.
+
+---
 
 ## Tests
 
-| Command | What it runs |
-|---|---|
-| `./gradlew test` | Unit + controller tests (no Docker required) |
-| `./gradlew check` | All of the above |
+The table below lists each test and the database it runs against.
 
-## Package structure
+| Test | Scope | Database |
+|---|---|---|
+| `AppPropertiesTest` | The `app.*` configuration properties | None |
+| `TodoControllerTest` | The controller endpoints, `WebTestClient` against a `@WebFluxTest` slice | Mocked repository |
+| `TodoRepositoryTest` | The R2DBC repository, with `@DataR2dbcTest` | PostgreSQL from Testcontainers |
+| `IntegrationTest` | The whole application over real HTTP, with `WebClient` | PostgreSQL from Testcontainers |
+
+`TestcontainersConfiguration` is a `@TestConfiguration` that declares a `PostgreSQLContainer` bean
+annotated with `@ServiceConnection`. Spring Boot derives the `spring.r2dbc.*` settings from the
+running container, so the tests need neither `@DynamicPropertySource` nor the `@Testcontainers` and
+`@Container` annotations.
+
+The tests need a running Docker daemon; Testcontainers starts a PostgreSQL container for them.
+To run the unit, controller, repository, and integration tests:
+
+```bash
+./gradlew test
+```
+
+---
+
+## Lint and format
+
+Kotlinter checks the Kotlin sources against the ktlint style rules, and the build fails when a
+rule is broken.
+
+| Command | Purpose |
+|---|---|
+| `./gradlew check` | Run the tests and the lint check |
+| `./gradlew lintKotlin` | Check the Kotlin sources with Kotlinter |
+| `./gradlew formatKotlin` | Format the Kotlin sources with Kotlinter |
+
+---
+
+## Project layout
 
 ```
 org.eljabali.sami.todo
@@ -71,21 +170,35 @@ org.eljabali.sami.todo
     └── model/                      request/response DTOs
 ```
 
+---
+
 ## Build
 
-```bash
-./gradlew build          # compile + all tests
-./gradlew bootJar        # fat JAR → build/libs/
-./gradlew lintKotlin     # Kotlinter lint check
-./gradlew formatKotlin   # Kotlinter auto-format
-```
+| Command | Purpose |
+|---|---|
+| `./gradlew build` | Compile, lint, and run all tests |
+| `./gradlew bootJar` | Build the executable JAR in `build/libs/` |
+
+---
 
 ## Docker
 
-Build and run the production image:
+To build and run the production image:
 
-```bash
-./gradlew bootJar
-docker build -t todo-app .
-docker run -p 8080:8080 todo-app
-```
+1. Build the executable JAR: `./gradlew bootJar`
+2. Build the image: `docker build -t todo-app .`
+3. Run the image: `docker run -p 8080:8080 todo-app`
+
+---
+
+## CI
+
+[`.github/workflows/build.yml`](.github/workflows/build.yml) compiles the project and runs the full
+test suite. The tests rely on Testcontainers, and Docker is preinstalled on the GitHub-hosted
+runners, so the workflow needs neither a database service nor a `docker compose up` step.
+
+---
+
+## License
+
+Released under the [MIT License](LICENSE).
