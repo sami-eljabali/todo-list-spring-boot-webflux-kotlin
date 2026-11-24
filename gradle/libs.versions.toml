@@ -21,7 +21,7 @@ starterValidation = { module = "org.springframework.boot:spring-boot-starter-val
 
 # Security
 starterSecurity = { module = "org.springframework.boot:spring-boot-starter-security" }
-starterSecurityTest = { module = "org.springframework.boot:spring-boot-starter-security-test" }
+securityTest = { module = "org.springframework.boot:spring-boot-starter-security-test" }
 
 # Actuator
 starterActuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
@@ -43,15 +43,14 @@ kotlinCoroutinesReactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-r
 dockerCompose = { module = "org.springframework.boot:spring-boot-docker-compose" }
 
 # Test dependencies
-springBootStarterTest = { module = "org.springframework.boot:spring-boot-starter-test" }
 webfluxTest = { module = "org.springframework.boot:spring-boot-starter-webflux-test" }
 webclientTest = { module = "org.springframework.boot:spring-boot-starter-webclient-test" }
 dataR2dbcTest = { module = "org.springframework.boot:spring-boot-starter-data-r2dbc-test" }
 reactorTest = { module = "io.projectreactor:reactor-test" }
-springBootTestcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
 testcontainersJunitJupiter = { module = "org.testcontainers:testcontainers-junit-jupiter" }
 testcontainersPostgresql = { module = "org.testcontainers:testcontainers-postgresql" }
 testcontainersR2dbc = { module = "org.testcontainers:testcontainers-r2dbc" }
+springBootTestcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
 kotlinTestJunit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5" }
 kotlinCoroutinesTest = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinCoroutines" }
 kotestAssertionsCoreJvm = { module = "io.kotest:kotest-assertions-core-jvm", version.ref = "kotest" }
@@ -73,11 +72,10 @@ spring = [
 ]
 
 springtest = [
-    "springBootStarterTest",
     "webfluxTest",
     "webclientTest",
     "dataR2dbcTest",
-    "starterSecurityTest",
+    "securityTest",
     "reactorTest",
 ]
 
